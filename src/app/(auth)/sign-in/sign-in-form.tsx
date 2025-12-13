@@ -47,6 +47,8 @@ export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const redirect=searchParams.get("redirect");
+
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -72,7 +74,7 @@ export function SignInForm() {
       setError(error.message || "Something went wrong");
     } else {
       toast.success("Signed In Successfully");
-      router.push("/dashboard");
+      router.push(redirect ?? "/dashboard");
     }
   }
 
