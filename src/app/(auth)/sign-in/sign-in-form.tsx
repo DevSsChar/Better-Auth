@@ -57,27 +57,42 @@ export function SignInForm() {
   });
 
   async function onSubmit({ email, password, rememberMe }: SignInValues) {
-   setError(null);
-   setLoading(true);
+    setError(null);
+    setLoading(true);
 
-   const {error} = await authClient.signIn.email({
-    email,
-    password,
-    rememberMe,
-   })
+    const { error } = await authClient.signIn.email({
+      email,
+      password,
+      rememberMe,
+    })
 
-   setLoading(false);
+    setLoading(false);
 
-   if( error){
-    setError(error.message || "Something went wrong");
-   }else{
-    toast.success("Signed In Successfully");
-    router.push("/dashboard");
-   }
+    if (error) {
+      setError(error.message || "Something went wrong");
+    } else {
+      toast.success("Signed In Successfully");
+      router.push("/dashboard");
+    }
   }
 
   async function handleSocialSignIn(provider: "google" | "github") {
-    // TODO: Handle social sign in
+    setError(null);
+    setLoading(true);
+
+    const { error } = await authClient.signIn.social({
+      provider,
+      callbackURL: "/dashboard",
+    })
+
+    setLoading(false);
+
+    if (error) {
+      setError(error.message || "Something went wrong");
+    } else {
+      toast.success("Signed In Successfully");
+      router.push("/dashboard");
+    }
   }
 
   return (
