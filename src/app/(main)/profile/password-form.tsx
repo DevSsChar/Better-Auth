@@ -11,11 +11,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { authClient } from "@/lib/auth-client";
 import { passwordSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 
 const updatePasswordSchema = z.object({
   currentPassword: z
@@ -42,7 +43,22 @@ export function PasswordForm() {
     currentPassword,
     newPassword,
   }: UpdatePasswordValues) {
-    // TODO: Handle password update
+    setStatus(null);
+    setError(null);
+
+    const {error}= await authClient.changePassword({
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true,
+    })
+
+    if(error)
+    {
+      setError(error.message || "Failed to update password");
+    }else{
+      setStatus("Password updated successfully");
+      form.reset();
+    }
   }
 
   const loading = form.formState.isSubmitting;
